@@ -63,7 +63,7 @@ resource "aws_subnet" "database" {
     local.common_tags,
     var.database_subnet_tags,
     {
-      Name = "${local.common_name}-public- ${split("-",local.az_names[count.index])[2]}"
+      Name = "${local.common_name}-database- ${split("-",local.az_names[count.index])[2]}"
     }
   )
     
@@ -153,13 +153,13 @@ resource "aws_route" "public" {
 
 resource "aws_route" "private" {
   route_table_id         = aws_route_table.private.id
-  destination_cidr_block = "0.0.0.0/0"                # The destination network path
-  gateway_id             = aws_nat_gateway.main.id   # The target gateway (or nat_gateway_id, transit_gateway_id, etc.)
+  destination_cidr_block = "0.0.0.0/0"                # The destination network path ,.
+  nat_gateway_id         = aws_nat_gateway.main.id   # The target gateway (or nat_gateway_id, transit_gateway_id, etc.)
 }
 resource "aws_route" "database" {
   route_table_id         = aws_route_table.database.id
-  destination_cidr_block = "0.0.0.0/0"                # The destination network path
-  gateway_id             = aws_nat_gateway.main.id   # The target gateway (or nat_gateway_id, transit_gateway_id, etc.)
+  destination_cidr_block = "0.0.0.0/0"               
+  nat_gateway_id            = aws_nat_gateway.main.id   
 }
 
 
