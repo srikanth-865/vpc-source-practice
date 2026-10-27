@@ -7,8 +7,7 @@ resource "aws_vpc" "main" {
     local.common_tags,
     var.vpc_tags
   )
-    
-  }
+                           }
 
   resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
@@ -25,7 +24,7 @@ resource "aws_vpc" "main" {
   vpc_id     = aws_vpc.main.id
   cidr_block = var.public_subnet_cidr[count.index]
   availability_zone   = slice(data.aws_availability_zones.available.names, 0, 2)[count.index]
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = true  #for publicip
 
   tags = merge (
     local.common_tags,
@@ -68,7 +67,7 @@ resource "aws_subnet" "database" {
   )
     
 }
-
+##inside our VPC we set route tables
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
@@ -121,7 +120,7 @@ resource "aws_route_table" "private" {
   route_table_id = aws_route_table.database.id
 }
 
-resource "aws_eip" "nat" {
+resource "aws_eip" "nat" { #elastic ip address fixing and  giving to NATgateway
   domain   = "vpc"
   tags = merge (
     local.common_tags,
@@ -133,6 +132,7 @@ resource "aws_eip" "nat" {
   }
 
 resource "aws_nat_gateway" "main" {
+  count = var.nat_gateway ? 1 : 0
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public[0].id
 
