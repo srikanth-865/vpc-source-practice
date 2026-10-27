@@ -132,8 +132,7 @@ resource "aws_eip" "nat" { #elastic ip address fixing and  giving to NATgateway
   }
 
 resource "aws_nat_gateway" "main" {
-  count = var.nat_gateway ? 1 : 0
-  allocation_id = aws_eip.nat.id
+  allocation_id = aws_eip.nat[count.index].id
   subnet_id     = aws_subnet.public[0].id
 
   tags = {
