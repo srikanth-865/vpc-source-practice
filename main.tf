@@ -64,9 +64,23 @@ resource "aws_subnet" "database" {
     {
       Name = "${local.common_name}-database- ${split("-",local.az_names[count.index])[2]}"
     }
-  )
-    
+  ) 
 }
+#This for RDS Databse group for combing two subnets databases
+resource "aws_db_subnet_group" "roboshop" {
+  name       = "${local.common_name}"
+  subnet_ids = aws_subnet.database[*].id
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.common_name}"
+    }
+  )
+}
+
+
+
 ##inside our VPC we set route tables
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
