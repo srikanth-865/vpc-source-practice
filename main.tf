@@ -66,7 +66,7 @@ resource "aws_subnet" "database" {
     }
   ) 
 }
-#This for RDS Databse group for combing two subnets databases
+#This for RDS Database group for combing two subnets databases cidr
 resource "aws_db_subnet_group" "roboshop" {
   name       = "${local.common_name}"
   subnet_ids = aws_subnet.database[*].id
